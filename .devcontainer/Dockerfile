@@ -27,19 +27,19 @@ RUN apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
     # Install Azure CLI
     && if [ "${INSTALL_AZURE_CLI}" = "true" ]; then \
-        echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" > /etc/apt/sources.list.d/azure-cli.list \
-        && curl -sL https://packages.microsoft.com/keys/microsoft.asc | apt-key add - 2>/dev/null \
-        && apt-get update \
-        && apt-get install -y azure-cli; \
+    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" > /etc/apt/sources.list.d/azure-cli.list \
+    && curl -sL https://packages.microsoft.com/keys/microsoft.asc | apt-key add - 2>/dev/null \
+    && apt-get update \
+    && apt-get install -y azure-cli; \
     fi \
     # Install Node.js
     && if [ "${INSTALL_AZURE_CLI}" = "true" ]; then bash /tmp/library-scripts/node-debian.sh "${NVM_DIR}" "${NODE_VERSION}" "${USERNAME}"; fi \
     # Install Docker CLI
     && if [ "${INSTALL_DOCKER}" = "true" ]; then \
-        bash /tmp/library-scripts/docker-debian.sh "true" "/var/run/docker-host.sock" "/var/run/docker.sock" "${USERNAME}"; \
+    bash /tmp/library-scripts/docker-debian.sh "true" "/var/run/docker-host.sock" "/var/run/docker.sock" "${USERNAME}"; \
     else \
-        echo '#!/bin/bash\n"$@"' > /usr/local/share/docker-init.sh \
-        && chmod +x /usr/local/share/docker-init.sh; \
+    echo '#!/bin/bash\n"$@"' > /usr/local/share/docker-init.sh \
+    && chmod +x /usr/local/share/docker-init.sh; \
     fi \
     && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
 
@@ -61,3 +61,4 @@ CMD [ "sleep", "infinity" ]
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
+COPY --from=bitnami/kubectl:latest /opt/bitnami/kubectl/bin/kubectl /usr/local/bin/kubectl
